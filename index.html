@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinoko Club Concierge - 销售・手配 业务流程</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;600&family=Zen+Maru+Gothic:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-primary: #8a6d3b;
+  --color-text: #534741;
+  --color-bg: #F7F6F5;
+  --color-sales: #8a6d3b;
+  --color-haishi: #534741;
+  --color-accent: #B89B5E;
+  --color-border: #E8E0D4;
+  --font-heading: 'Noto Serif SC', 'Canela', serif;
+  --font-body: 'Noto Sans SC', 'Zen Maru Gothic', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  background: var(--color-bg);
+  background-image: url('./bg-pattern.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-attachment: fixed;
+  color: var(--color-text);
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+/* Sticky top bar */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 8px rgba(83, 71, 65, 0.06);
+  padding: 10px 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-bar .logo {
+  width: 120px;
+  height: auto;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 24px 20px 20px;
+}
+
+.header h1 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 2rem;
+  color: var(--color-primary);
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.header .subtitle {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+/* Flowchart image */
+.flowchart-section {
+  max-width: 960px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.flowchart-section img {
+  max-width: 60%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(83, 71, 65, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.flowchart-section img:hover {
+  transform: scale(1.02);
+}
+
+.flowchart-section .flowchart-hint {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  opacity: 0.7;
+}
+
+.flowchart-section .flowchart-hint a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* Lightbox */
+.lightbox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox.active {
+  display: flex;
+}
+
+.lightbox img {
+  max-width: 92%;
+  max-height: 92vh;
+  border-radius: 4px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.5);
+}
+
+/* Lark links */
+.lark-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--color-accent);
+  transition: border-color 0.2s;
+}
+
+.lark-link:hover {
+  border-bottom-color: var(--color-primary);
+}
+
+/* Divider */
+.divider {
+  max-width: 960px;
+  margin: 0 auto;
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Main content */
+.content-section {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--color-border);
+  margin-bottom: 32px;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--color-text);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  opacity: 1;
+  color: var(--color-accent);
+}
+
+.tab-btn.active {
+  opacity: 1;
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* Tab panels */
+.tab-panel {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Two-column layout */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+@media (max-width: 768px) {
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Side headers */
+.side-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.side-header .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.side-header .dot.sales {
+  background: var(--color-sales);
+}
+
+.side-header .dot.haishi {
+  background: var(--color-haishi);
+}
+
+.side-header h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Accordion items */
+.accordion-item {
+  margin-bottom: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.accordion-trigger {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  background: rgba(232, 224, 212, 0.4);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s ease;
+}
+
+.accordion-trigger:hover {
+  background: rgba(232, 224, 212, 0.7);
+}
+
+.accordion-trigger .arrow {
+  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+.accordion-trigger.open .arrow {
+  transform: rotate(180deg);
+}
+
+.accordion-trigger.open {
+  border-radius: 6px 6px 0 0;
+  border-bottom: none;
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  padding: 0 16px;
+  background: #fff;
+}
+
+.accordion-content.open {
+  max-height: 2000px;
+  padding: 16px;
+}
+
+.accordion-content ul {
+  padding-left: 18px;
+  margin: 6px 0;
+}
+
+.accordion-content li {
+  margin-bottom: 6px;
+  line-height: 1.7;
+}
+
+.accordion-content p {
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+
+.accordion-content a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.accordion-content a:hover {
+  color: var(--color-accent);
+}
+
+/* Callout (replaces emoji callouts) */
+.callout {
+  border-left: 3px solid var(--color-accent);
+  background: rgba(184, 155, 94, 0.08);
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* Blockquote style for notes */
+.note {
+  border-left: 3px solid var(--color-accent);
+  background: rgba(184, 155, 94, 0.08);
+  padding: 12px 16px;
+  margin: 0 0 20px 0;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* Bold text */
+.accordion-content strong {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 0.8rem;
+  color: var(--color-text);
+  opacity: 0.5;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Responsive tab font */
+@media (max-width: 600px) {
+  .tab-btn {
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+  .header h1 {
+    font-size: 1.5rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav class="top-bar">
+  <img src="./logo.png" alt="Kinoko Club Concierge" class="logo">
+</nav>
+
+<header class="header">
+  <h1>Kinoko Club Concierge</h1>
+  <p class="subtitle">旅行業 销售・手配 業務流程</p>
+</header>
+
+<section class="flowchart-section">
+  <img src="./flowchart.png" alt="業務流程図" onclick="document.getElementById('lightbox').classList.add('active')">
+  <p class="flowchart-hint">点击图片放大查看 ｜ <a href="https://d7ntwnqch6e.jp.larksuite.com/docx/LaSXdeRb8oYSj6xW13NjPnoSpIc" target="_blank">查看 Lark 文档原文</a></p>
+</section>
+
+<div id="lightbox" class="lightbox" onclick="this.classList.remove('active')">
+  <img src="./flowchart.png" alt="業務流程図 - 放大">
+</div>
+
+<hr class="divider">
+
+<main class="content-section">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="tab1">報価阶段</button>
+    <button class="tab-btn" data-tab="tab2">行前阶段</button>
+    <button class="tab-btn" data-tab="tab3">团行进中</button>
+    <button class="tab-btn" data-tab="tab4">结算阶段</button>
+  </div>
+
+  <!-- 报价阶段 -->
+  <div class="tab-panel active" id="tab1">
+    <div class="columns">
+      <!-- 销售侧 -->
+      <div class="column">
+        <div class="side-header">
+          <span class="dot sales"></span>
+          <h3>销售侧</h3>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger open">报价系统<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content open">
+            <ul>
+              <li>使用Money Forward 系统做报价表；在Money Forward 需要完整的登陆客户的准确信息（信息是否完整由须藤每次确认，如登陆信息不全无法支付出金）。<br><a href="https://invoice.moneyforward.com/reports/sales" target="_blank">https://invoice.moneyforward.com/reports/sales</a></li>
+              <li>根据需求的难易程度销售可以自由使用相应的 Excel 报价模板。具体模板由于每个销售的报价习惯不同，可以根据销售的需要自由使用，但最终的 invoice 是需要通过Money Forward系统来制作。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger open">回复时效<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content open">
+            <p>客人询价后，立刻回复预计的报价时间，不可以已读不回，报价无法及时完成如果想放弃客户报告公司更换销售。原则当日问询最晚次日回复。</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger open">行程推荐<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content open">
+            <ul>
+              <li><strong>客人无行程：</strong>需要我方进行行程推荐，需要问清出行日期、天数、人数（男女构成/年龄层/是否有孩子或老人）、出行目的、出行预算、参考航班等信息，根据客人提供的信息和需求进行简易的行程推荐（仅提供点对点的行程框架思路；特殊情况可提供图文并茂的行程文档）</li>
+              <li><strong>客人有行程：</strong>销售有责任检查客人提供的行程是否合理并提供修改意见。</li>
+              <li>行程推荐完毕并收到客人的确认后，根据确定后的行程进行报价。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger open">报价内容<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content open">
+            <ul>
+              <li><strong>商务车：</strong>严格遵循公司一年一更新的商务车价格表报价，无折扣，特殊情况由销售自主掌控报价（折扣不可高于10%）</li>
+              <li><strong>巴士：</strong>按照公司不同市场的价格表报价，根据巴士紧张程度可以调整价格但不要偏离太多。特殊款巴士请各自订价，利润率15%以上。</li>
+              <li><strong>导游：</strong>必须使用Lark导游库内的已登录导游，第一次使用的导游，需要登录至导游库。<div class="callout">导游成本的两倍报价来预防风险；导游经验询问公司内有经验的前辈反馈进行参考。</div></li>
+              <li><strong>酒店：</strong>
+                <ul>
+                  <li>酒店直采：酒店和我司直接建立预约契约拥有价格优势的。如：日本安缦系/京都三井豪华精选/东京东急凯彼得酒店/星野Agent预约系统/Abba坐渔庄等</li>
+                  <li>知行/八大洲GDS：微信小程序，擅长国际连锁奢华酒店品牌（提供入住礼遇）</li>
+                  <li>酒店OTA平台：如一休、Yahoo travel、Trip、Rakuten等（高级温泉酒店居多）或酒店官网</li>
+                  <li>DAIEI：法人旅行社，可通过微信群直接询价（团队酒店居多）</li>
+                  <li>其他渠道：公司不监督，发生损失从销售的成本里扣除</li>
+                </ul>
+              </li>
+              <li><strong>门票：</strong>利润率10%以上原则报价，报最贵的日期的普通价格，不可以报团队价；报价时需要确认目标日期该营业场所是否正常营业</li>
+              <li><strong>餐厅：</strong>
+                <ul>
+                  <li>预约服务费5500円/餐起，根据需求人数和消耗精力程度可酌情加价；销售有权力不收该费用</li>
+                  <li>在需要将餐费包含进报价的情况时，按照利润率10%以上原则报价；在客人要求餐费实报实销但仍需我方垫付的情况下，按照实际垫付的金额收取10%的服务费。</li>
+                </ul>
+              </li>
+              <li><strong>特殊体验：</strong>
+                <ul>
+                  <li>既有体验产品请按照VIP体验册严格报价；资源方会经常有价格变动，报价前需要核实成本价；成本价请参考Lark文档<a href="https://d7ntwnqch6e.jp.larksuite.com/base/Uow9bIp8Za2Er6s6Wz2jEDrlp9d" target="_blank" class="lark-link">【体験予約リスト】</a></li>
+                  <li>不轻易使用新产品，如果使用请尽量提前踩点并Feedback同步给公司其他人；按照利润率10%以上原则报价</li>
+                  <li>特殊大型活动公司内部一起讨论</li>
+                  <li>固定行程产品：公司会定期提供一些固定行程请推销给各自的客户；如有新的行程或客人反馈好的行程，积极反应到公司</li>
+                </ul>
+              </li>
+              <li><strong>固定行程产品：</strong>公司定期提供，推销给各自客户；如有新的行程或客人反馈好的行程，积极反应到公司</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger open">报价结束<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content open">
+            <p>根据客人的反馈调整行程和报价，直至客人确认行程和报价无需再调整并确认出行后，视作成团。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 手配侧 -->
+      <div class="column">
+        <div class="side-header">
+          <span class="dot haishi"></span>
+          <h3>手配侧</h3>
+        </div>
+
+        <div class="note">信息收集不做决策：手配侧仅负责查询和提供数据，最终报价决策由销售负责。</div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger open">查询体验项目<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content open">
+            <p>根据销售需求查询目标体验的预约时间、价格、可预约人数，核实资源方最新成本价（参考Lark文档<a href="https://d7ntwnqch6e.jp.larksuite.com/base/Uow9bIp8Za2Er6s6Wz2jEDrlp9d" target="_blank" class="lark-link">【体験予約リスト】</a>），整理后提供给销售，由销售决定是否纳入报价。</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger open">查询餐厅<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content open">
+            <p>查询可预约时段、座位类型、是否接待儿童、取消政策、忌口对应，获取预约服务费和餐费报价，反馈给销售。</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger open">查询用车<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content open">
+            <p>向商务车公司或巴士公司询价：车型、日期、可调度情况，反馈给销售。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 行前阶段 -->
+  <div class="tab-panel" id="tab2">
+    <div class="columns">
+      <!-- 销售侧 -->
+      <div class="column">
+        <div class="side-header">
+          <span class="dot sales"></span>
+          <h3>销售侧</h3>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">建立团档<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li>建立团档：在Lark对应市场的文件夹内建立团档（命名格式为：年份-出发日期-结束日期-客户名称及描述-社员号，如：2026-0515-0520-FORA关东关西2人-005）；</li>
+              <li>建立团号（命名格式为：KNO-出发日期-结束日期-社员号。如：KNO-0515-0520-FORA-005）</li>
+              <li>在<a href="https://d7ntwnqch6e.jp.larksuite.com/sheets/Xh2ssLbdShWP0ztLwpHjo1GspBh" target="_blank" class="lark-link">【年度売上管理表】</a>内登陆该团信息，用来记录每个团的收入（由销售填写）和支出（由会计填写）</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">申请付款<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li>根据报价金额使用Money Forward系统制作PDF版Invoice和客人请款，首款最低为团费的80%。</li>
+              <li>如果客户信息不完整/<a href="https://d7ntwnqch6e.jp.larksuite.com/sheets/Xh2ssLbdShWP0ztLwpHjo1GspBh" target="_blank" class="lark-link">【年度売上管理表】</a>内没有登陆，或客人没有入账80%以上，会计拥有不支付该团相应出金的权利</li>
+              <li>特殊情况需要找社长报备</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">客人付款<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li><strong>国际汇款：</strong>国际汇款手续费由客人方承担；客人支付后需要管客人要汇款水单；销售需要将Invoice和水单反馈给会计，方便会计核对入金</li>
+              <li><strong>信用卡链接支付：</strong>销售使用信用卡链接系统制作支付链接发送给客人，需要注意有3%的银行支付手续费要额外加到Invoice中；客人支付后需要管客人要确认支付的截图；销售需要讲信用卡链接编号和金额登记在<a href="https://d7ntwnqch6e.jp.larksuite.com/sheets/Xh2ssLbdShWP0ztLwpHjo1GspBh" target="_blank" class="lark-link">「年度売上管理表」</a>中（分为直接扣钱和仅扣支付额度两种，具体请和公司前辈确认）</li>
+              <li><strong>人民币支付：</strong>不正当的支付方式，但是客户需要的时候可以接受，特别是直客。只有私人账户无公帐账号；只能开日本的发票（Invoice/请求书）给客人，无中国发票</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">行前落地 + Final出团通知书 + 对团<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>根据行程和报价，和手配一起推进每一个项目的预约和落地安排；参照报价单，排查报价时是否有疏漏。</p>
+            <p><strong>落地事项：</strong></p>
+            <ul>
+              <li><strong>商务车：</strong>和车公司确认预约，核定车型/年份/颜色/司机，确认司机住宿、备品、出团通知书、接机牌PDF、准备金，至少电话对团一次</li>
+              <li><strong>巴士：</strong>确认预约、核定车型、司机住宿及停车场、提前邮寄物品、日文版出团通知书、接机牌PDF、现场结算费用</li>
+              <li><strong>导游：</strong>出团通知书、住宿、接机牌PDF、准备金、电话对团</li>
+              <li><strong>酒店：</strong>
+                <ul>
+                  <li><strong>客人侧预约：</strong>索要确认信息、电话二次确认、不一致反馈客人</li>
+                  <li><strong>我方预约：</strong>同步预约信息给客人、备注房费保密、入住前完成支付、二次确认</li>
+                </ul>
+              </li>
+              <li><strong>门票/新干线票/机票：</strong>第一时间预约、定休日排查、信用卡支付填表</li>
+              <li><strong>特殊体验或活动：</strong>第一时间预约、同步出团通知书、按资源方需求付款</li>
+              <li><strong>餐厅：</strong>第一时间预约、确认忌口/座位/儿童/取消政策、留存对接信息、同步出团通知书</li>
+              <li><strong>注意事项：</strong>儿童椅、客人爱好、特殊关注人、人员关系、酒店欢迎礼物水果等</li>
+            </ul>
+            <p><strong>出团通知：</strong></p>
+            <p>根据所有的执行细节，制作Final出团通知书，并和团相关的执行人员对团。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 手配侧 -->
+      <div class="column">
+        <div class="side-header">
+          <span class="dot haishi"></span>
+          <h3>手配侧</h3>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">整体行程内容及报价确认<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>根据销售提供的最终行程表及报价单，逐项确认并开始操作预约，必要时和销售面对面或电话沟通确认。</p>
+            <p><strong>需确认：</strong>日期／人数／时间／饮食忌口、是否存在特殊需求（儿童、高龄者等）、如报价项目出现日期时间休馆等需确认是否可更换、儿童椅、行动不便客人、轮椅需求、客人关系（夫妻／家庭／老板员工等）、饮食偏好、生日／纪念日安排。</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">商务车手配<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li><strong>预约：</strong>向车公司发送正式预约（用车日期/时间/人数/行李数量/路线）</li>
+              <li><strong>车辆确认：</strong>车型/年份/颜色/车牌（临近出团确认）/是否指定司机/是否安排熟悉VIP的司机</li>
+              <li><strong>司机相关：</strong>是否需要安排司机住宿</li>
+              <li><strong>车内备品：</strong>正常提供矿泉水/雨伞/垃圾袋/纸巾和湿纸巾；特殊备品根据团需求（零食/手机充电线/充电宝/WIFI/儿童椅等）</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">巴士手配<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li><strong>联系巴士公司沟通预约：</strong>人数/行李数量/路线/高速停车安排/是否需中途更换司机和换车/是否需安排司机住宿/确认司机餐费和茶水费标准</li>
+              <li><strong>车辆确认：</strong>车型/年份/颜色</li>
+              <li><strong>停车场安排：</strong>夜间停车场/酒店停车/景点停车限制</li>
+              <li><strong>物品准备：</strong>确认是否需提前邮寄水/雨伞/垃圾袋/湿纸巾/礼品等</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">导游手配<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li><strong>预约（通过邮件/LINE/微信联系导游）：</strong>日期/工作时间/语言/地区</li>
+              <li><strong>住宿确认：</strong>是否需要安排住宿</li>
+              <li><strong>资料发送（出团前）：</strong>最终版出团通知书/客人信息/接机牌PDF/注意事项/客人喜好信息</li>
+              <li><strong>费用确认：</strong>是否需要准备金/是否存在现场支付项目</li>
+              <li><strong>最终确认（电话或邮件，必要时销售亲自沟通）：</strong>行程内容/客人特点饮食忌口/特殊注意事项</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">酒店手配<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li><strong>客人侧预约时：</strong>
+                <ul>
+                  <li><strong>信息获取：</strong>酒店确认单/预约号码/入住人姓名/入住日期/房型/人数/早餐/特殊需求</li>
+                  <li><strong>问题反馈：</strong>出现信息不一致时第一时间反馈销售（房型不对/不含早餐/费用尚未支付等）</li>
+                </ul>
+              </li>
+              <li><strong>公司代预约：</strong>
+                <ul>
+                  <li><strong>预约后同步给销售：</strong>预约号/预约名/人数/房型/是否含早餐或含早晚餐/价格/是否有返佣/早晚餐时间和是否可提前预约/支付方法</li>
+                  <li><strong>同步酒店需求：</strong>向酒店备注房费保密/VIP对应/饮食限制/纪念日/儿童需求</li>
+                  <li><strong>支付确认：</strong>入住前完成支付</li>
+                  <li><strong>二次确认（电话或邮件）：</strong>房型/人数/预约名字/支付状态/忌口/特殊需求</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">门票/新干线/机票手配<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li><strong>第一时间预约</strong>（需和销售确认可以购买后再操作），避免售罄/涨价/无法指定时间</li>
+              <li><strong>确认事项：</strong>定休日/入场限制/座位/行李规则</li>
+              <li><strong>支付管理：</strong>信用卡支付时填写<a href="https://d7ntwnqch6e.jp.larksuite.com/wiki/Kl4UsYvFUhZpvetRKIGjSGJ7pkb" target="_blank" class="lark-link">【クレジットカード管理表】</a>；银行汇款时和销售确认后再将请求书交给会计</li>
+              <li><strong>出票管理：</strong>PDF/QR CODE/纸票邮寄</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">特殊体验/活动手配<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li><strong>尽早预约</strong>（茶道/艺伎/相扑/钓鱼/特殊VIP私人体验等）</li>
+              <li><strong>同步信息在出团通知书记录：</strong>地址/时间/联系方式/注意事项/取消政策</li>
+              <li><strong>付款确认：</strong>事前付款/当日付款/结束后付款</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">餐厅手配<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <ul>
+              <li><strong>确认客人需求：</strong>忌口/过敏/是否儿童同行/是否VIP安排预约</li>
+              <li><strong>预约：</strong>日期/时间/人数/包间或座位形式/套餐或当日点餐/儿童是否可进店及年龄限制</li>
+              <li><strong>取消政策：</strong>取消期限/No-show费用</li>
+              <li><strong>信息留存：</strong>对接人姓名/电话/邮件记录</li>
+              <li><strong>同步出团通知书：</strong>餐厅地址/预约名/注意事项</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">支出管理与信用卡填表<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>涉及信用卡支付项目使用名下卡支付，刷卡后必须将明细填入<a href="https://d7ntwnqch6e.jp.larksuite.com/wiki/Kl4UsYvFUhZpvetRKIGjSGJ7pkb" target="_blank" class="lark-link">【クレジットカード管理表】</a>。公司信用卡分布在不同手配名下，每人一张，分配给不同销售刷卡。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 团行进中 -->
+  <div class="tab-panel" id="tab3">
+    <div class="columns">
+      <!-- 销售侧 -->
+      <div class="column">
+        <div class="side-header">
+          <span class="dot sales"></span>
+          <h3>销售侧</h3>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">应对客人临时需求<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>根据团行进中客人临时出现的需求或产生的问题，随即应对调整，尽量满足客人。</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">额外支出同步<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>有额外支出需要随时和客人同步取得确认，避免事后争议。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 手配侧 -->
+      <div class="column">
+        <div class="side-header">
+          <span class="dot haishi"></span>
+          <h3>手配侧</h3>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">协助执行临时变更<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>销售提出临时变更（调整用车时间/追加餐厅/改票等），手配联系供应商执行。变更完成后及时反馈销售。涉及额外费用记录并同步。</p>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top: 12px;">行进中手配工作量较少，主要配合销售快速响应临时变更。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 结算阶段 -->
+  <div class="tab-panel" id="tab4">
+    <div class="columns">
+      <!-- 销售侧 -->
+      <div class="column">
+        <div class="side-header">
+          <span class="dot sales"></span>
+          <h3>销售侧</h3>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">确认支出<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>团结束后，在一周内和团相关的人员或供应商收集账单确认团的最终账单，确认无误后，同步给会计请会计进行回款结算（所有的请求书会计都再审核一次发票；所有支出都由会计一人输入进<a href="https://d7ntwnqch6e.jp.larksuite.com/sheets/Xh2ssLbdShWP0ztLwpHjo1GspBh" target="_blank" class="lark-link">「年度売上管理表」</a>；会计会在收到账单后的1个月内进行支付）</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">更新尾款<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>根据收集来的账单来确认团的最终支出，制作尾款明细和尾款Invoice给客人，需要当月之内收回尾款（月底的团14日内收回尾款）</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">结团复盘<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>收集团意见表/用餐反馈等信息，按需反馈给客人或公司内部</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">利润确认<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>需要确认<a href="https://d7ntwnqch6e.jp.larksuite.com/sheets/Xh2ssLbdShWP0ztLwpHjo1GspBh" target="_blank" class="lark-link">【年度売上管理表】</a>中记载的收入和支出是否正确；公司会定期公布销售业绩</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 手配侧 -->
+      <div class="column">
+        <div class="side-header">
+          <span class="dot haishi"></span>
+          <h3>手配侧</h3>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">收集供应商账单<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>协助销售收集各供应商请求书/账单，确认支付金额与预约内容一致。</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-trigger">整理信用卡明细<span class="arrow">&#9662;</span></button>
+          <div class="accordion-content">
+            <p>确认信用卡管理表中该团刷卡记录完整，汇总刷卡明细提供给销售用于尾款Invoice</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  Kinoko Club Concierge &copy; 2026 | 内部研修资料
+</footer>
+
+<script>
+(function() {
+  // Tab switching
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Accordion
+  const triggers = document.querySelectorAll('.accordion-trigger');
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const content = trigger.nextElementSibling;
+      const isOpen = trigger.classList.contains('open');
+      if (isOpen) {
+        trigger.classList.remove('open');
+        content.classList.remove('open');
+      } else {
+        trigger.classList.add('open');
+        content.classList.add('open');
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
